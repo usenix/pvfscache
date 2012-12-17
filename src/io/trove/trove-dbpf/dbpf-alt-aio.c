@@ -212,9 +212,15 @@ static void* alt_lio_thread(void* foo)
 
     struct stat statbuf;
     fstat(tmp_item->cb_p->aio_fildes, &statbuf);
-    gossip_debug(GOSSIP_WORMUP_DEBUG, "type: %s\tinode:%ld\tsize:%ld KB\n", 
+    int tempmbs = tmp_item->cb_p->aio_nbytes/1024;
+    if (tempmbs)
+        gossip_debug(GOSSIP_WORMUP_DEBUG, "type: %s\tinode:%ld\tsize:%ld KB\n", 
 		(tmp_item->cb_p->aio_lio_opcode == LIO_READ)?"read":"write", 
 		statbuf.st_ino, tmp_item->cb_p->aio_nbytes/1024);
+    else
+        gossip_debug(GOSSIP_WORMUP_DEBUG, "type: %s\tinode:%ld\tsize:%ld Byte\n",
+                (tmp_item->cb_p->aio_lio_opcode == LIO_READ)?"read":"write",
+                statbuf.st_ino, tmp_item->cb_p->aio_nbytes);
 
     if(tmp_item->cb_p->aio_lio_opcode == LIO_READ)
     {
