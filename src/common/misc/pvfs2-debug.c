@@ -23,6 +23,8 @@ typedef struct
 /* map all config keywords to pvfs2 debug masks here */
 static __keyword_mask_t s_keyword_mask_map[] =
 {
+    /* Log wormup info. */
+    { "wormup", GOSSIP_WORMUP_DEBUG },
     /* Log trove debugging info.  Same as 'trove'.*/
     { "storage", GOSSIP_TROVE_DEBUG },
     /* Log trove debugging info.  Same as 'storage'. */

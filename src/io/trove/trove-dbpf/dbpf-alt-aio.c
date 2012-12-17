@@ -4,6 +4,7 @@
 #include "pthread.h"
 #include "dbpf.h"
 #include <string.h>
+#include <sys/stat.h>
 
 static int alt_lio_listio(int mode, struct aiocb * const list[],
                           int nent, struct sigevent *sig);
@@ -208,6 +209,12 @@ static void* alt_lio_thread(void* foo)
 {
     struct alt_aio_item* tmp_item = (struct alt_aio_item*)foo;
     int ret = 0;
+
+    struct stat statbuf;
+    fstat(tmp_item->cb_p->aio_fildes, &statbuf);
+    gossip_debug(GOSSIP_WORMUP_DEBUG, "type: %s\tinode:%ld\tsize:%ld KB\n", 
+		(tmp_item->cb_p->aio_lio_opcode == LIO_READ)?"read":"write", 
+		statbuf.st_ino, tmp_item->cb_p->aio_nbytes/1024);
 
     if(tmp_item->cb_p->aio_lio_opcode == LIO_READ)
     {

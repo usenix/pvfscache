@@ -716,6 +716,7 @@ inline int dbpf_bstream_rw_list(TROVE_coll_id coll_id,
                                 struct dbpf_aio_ops * aio_ops,
                                 PVFS_hint  hints)
 {
+    //gossip_debug(GOSSIP_WORMUP_DEBUG, "Here we enter into dbpf_bstream_rw_list\n");
     int ret = -TROVE_EINVAL;
     dbpf_queued_op_t *q_op_p = NULL;
     struct dbpf_collection *coll_p = NULL;
