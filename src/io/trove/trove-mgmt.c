@@ -34,8 +34,8 @@ struct TROVE_mgmt_ops *mgmt_method_table[] =
     &dbpf_mgmt_ops,
     &dbpf_mgmt_ops, /* alt-aio */
     &dbpf_mgmt_ops, /* null-aio */
-    &dbpf_mgmt_direct_ops,  /* direct-io */
-	&dbpf_mgmt_ops   /* wormup-io */
+	&dbpf_mgmt_direct_ops,  /* direct-io */
+    &dbpf_mgmt_ops   /* wormup-io */
 
 };
 
@@ -45,7 +45,7 @@ struct TROVE_dspace_ops *dspace_method_table[] =
     &dbpf_dspace_ops, /* alt-aio */
     &dbpf_dspace_ops, /* null-aio */
     &dbpf_dspace_ops,  /* direct-io */
-	&dbpf_dspace_ops  /* wormup-io */
+    &dbpf_dspace_ops  /* wormup-io */
 };
 
 struct TROVE_keyval_ops *keyval_method_table[] =
@@ -54,7 +54,7 @@ struct TROVE_keyval_ops *keyval_method_table[] =
     &dbpf_keyval_ops, /* alt-aio */
     &dbpf_keyval_ops, /* null-aio */
     &dbpf_keyval_ops,  /* direct-io */
-	&dbpf_keyval_ops   /* wormup-io */
+    &dbpf_keyval_ops   /* wormup-io */
 };
 
 struct TROVE_bstream_ops *bstream_method_table[] =

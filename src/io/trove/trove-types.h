@@ -53,7 +53,7 @@ typedef enum
     TROVE_METHOD_DBPF_ALTAIO,
     TROVE_METHOD_DBPF_NULLAIO,
     TROVE_METHOD_DBPF_DIRECTIO,
-	TROVE_METHOD_DBPF_WORMUPIO
+    TROVE_METHOD_DBPF_WORMUPIO
 } TROVE_method_id;
 
 typedef TROVE_method_id (*TROVE_method_callback)(TROVE_coll_id);
