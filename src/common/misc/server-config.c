@@ -2754,6 +2754,10 @@ DOTCONF_CB(get_trove_method)
     {
         *method = TROVE_METHOD_DBPF_DIRECTIO;
     }
+	else if(!strcmp(cmd->data.str, "wormupio"))
+    {
+        *method = TROVE_METHOD_DBPF_WORMUPIO;
+    }
     else
     {
         return "Error unknown TroveMethod option\n";
