@@ -63,7 +63,7 @@ struct TROVE_bstream_ops *bstream_method_table[] =
     &alt_aio_bstream_ops,
     &null_aio_bstream_ops,
     &dbpf_bstream_direct_ops,
-	&dbpf_bstream_wormup_ops
+    &dbpf_bstream_wormup_ops
 };
 
 struct TROVE_context_ops *context_method_table[] =
@@ -72,7 +72,7 @@ struct TROVE_context_ops *context_method_table[] =
     &dbpf_context_ops, /* alt-aio */
     &dbpf_context_ops, /* null-aio */
     &dbpf_context_ops,  /* direct-io */
-	&dbpf_context_ops, /* wormup-io */
+    &dbpf_context_ops /* wormup-io */
 };
 
 /* trove_init_mutex, trove_init_status

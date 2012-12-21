@@ -2760,7 +2760,7 @@ DOTCONF_CB(get_trove_method)
     }
     else
     {
-        return "Error unknown TroveMethod option\n";
+        return "TroveMethod Error!\n";
     }
     return NULL;
 }
