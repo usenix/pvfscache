@@ -171,13 +171,13 @@ static int is_root_handle_in_my_range(
  * are relevant and applicable for a particular server.
  * This parameter will be used by the server to parse relevant options.
  * Configuration options in the global config files have the following format:
- * 
+ *
  * <pre>
  * OptionName OptionValue
  * </pre>
  *
  * An option cannot span more than one line, and only one option can
- * be specified on each line.  The <i>OptionValue</i> should 
+ * be specified on each line.  The <i>OptionValue</i> should
  * be formatted based on the option's type:
  *
  * <ul>
@@ -189,7 +189,7 @@ static int is_root_handle_in_my_range(
  * Options are grouped together using contexts, and usually
  * indented within a context for clarity.  A context is started
  * with a context start tag, and ended with a context end tag:
- * 
+ *
  * <pre>
  * &lt;ContextName&gt;
  *     Option1Name Option1Value
@@ -197,20 +197,20 @@ static int is_root_handle_in_my_range(
  * &lt;/ContextName&gt;
  * </pre>
  *
- * Options are required to be defined within a specified context 
- * or set of contexts. 
+ * Options are required to be defined within a specified context
+ * or set of contexts.
  * Sub-contexts can also be specified, and must be defined within
  * their specified parent context.  For example, the <i>Range</i> option is
- * specified in either the <i>DataHandleRanges</i> or <i>MetaHandleRanges</i> 
+ * specified in either the <i>DataHandleRanges</i> or <i>MetaHandleRanges</i>
  * contexts.  Both of
  * those contexts are specified to be defined in the <i>FileSystem</i> context.
  * Details of the required context an option or sub-context must be defined in
- * are given in the <a href="#OptionDetails">Option Details</a> section. 
+ * are given in the <a href="#OptionDetails">Option Details</a> section.
  *
  * Options and contexts that appear in the top-level (not defined within
  * another context) are considered to be defined in a special <i>Global</i>
  * context.  Many options are only specified to appear within
- * the <a name="Default">Default</a> context, 
+ * the <a name="Default">Default</a> context,
  * which is a context that allows a default value to be specified for certain
  * options.
  *
@@ -222,7 +222,7 @@ static int is_root_handle_in_my_range(
  */
 static const configoption_t options[] =
 {
-    /* Options specified within the Defaults context are used as 
+    /* Options specified within the Defaults context are used as
      * default values over all the pvfs2 server specific config files.
      */
     {"<Defaults>",ARG_NONE, enter_defaults_context,NULL,CTX_GLOBAL,NULL},
@@ -232,7 +232,7 @@ static const configoption_t options[] =
     {"</Defaults>",ARG_NONE, exit_defaults_context,NULL,CTX_DEFAULTS,NULL},
 
 #ifdef USE_TRUSTED
-    /* Options specified within the Security context are used to dictate 
+    /* Options specified within the Security context are used to dictate
      * whether the pvfs2
      * servers will accept or handle file-system requests.
      * This section is optional and does not need to be specified.
@@ -242,7 +242,7 @@ static const configoption_t options[] =
     /* Specifies the end-tag for the Security context.
      */
     {"</Security>",ARG_NONE, exit_security_context,NULL,CTX_SECURITY,NULL},
-    
+
     /* Specifies the range of ports in the form of a range of 2 integers
      * from which the connections are going to be accepted and serviced.
      * The format of the TrustedPorts option is:
@@ -255,7 +255,7 @@ static const configoption_t options[] =
      */
     {"TrustedPorts",ARG_STR, get_trusted_portlist,NULL,
         CTX_SECURITY,NULL},
-    
+
     /* Specifies the IP network and netmask in the form of 2 BMI addresses from
      * which the connections are going to be accepted and serviced.
      * The format of the TrustedNetwork option is:
@@ -302,7 +302,7 @@ static const configoption_t options[] =
 
     /* This groups the Server specific options.
      *
-     * The ServerOptions context should be defined after the Alias mappings 
+     * The ServerOptions context should be defined after the Alias mappings
      * have been defined. The reason is that the ServerOptions context is
      * defined in terms of the aliases defined in that context.
      *
@@ -355,12 +355,12 @@ static const configoption_t options[] =
       */
      {"<ExportOptions>",ARG_NONE, enter_export_options_context, NULL,CTX_FILESYSTEM,
          NULL},
- 
+
      /* Specifies the end-tag of the ExportOptions context.
       */
      {"</ExportOptions>",ARG_NONE, exit_export_options_context, NULL,CTX_EXPORT,
          NULL},
- 
+
     /* This groups
      * options specific to a filesystem and related to the behavior of the
      * storage system.  Mostly these options are passed directly to the
@@ -422,13 +422,13 @@ static const configoption_t options[] =
 
     /* As logical files are created in pvfs, the data files and meta files
      * that represent them are given filesystem unique handle values.  The
-     * user can specify a range of values (or set of ranges) 
+     * user can specify a range of values (or set of ranges)
      * to be allocated to data files and meta files for a particular server,
      * using the Range option in the DataHandleRanges and MetaHandleRanges
-     * contexts.  Note that in most cases, its easier to let the 
+     * contexts.  Note that in most cases, its easier to let the
      * pvfs2-genconfig script determine the best ranges to specify.
      *
-     * This option specifies a range of handle values that can be used for 
+     * This option specifies a range of handle values that can be used for
      * a particular pvfs server in a particular context (meta handles
      * or data handles).  The DataHandleRanges and MetaHandleRanges contexts
      * should contain one or more Range options.  The format is:
@@ -444,9 +444,9 @@ static const configoption_t options[] =
      *
      * As shown in the specified format, multiple ranges can be specified for
      * the same alias.  The format requires that max value of a given range
-     * is less than the min value of the next one, 
+     * is less than the min value of the next one,
      * i.e. {max value1}<{min value2}
-     * 
+     *
      * Example of a Range option for data handles:
      *
      * Range mynode1 2147483651-4294967297
@@ -459,7 +459,7 @@ static const configoption_t options[] =
      *
      * RootHandle {handle value}
      *
-     * Where {handle value} is a positive integer no greater than 
+     * Where {handle value} is a positive integer no greater than
      * 18446744073709551615 (UIN64_MAX).
      *
      * In general its best to let the pvfs-genconfig script specify a
@@ -476,9 +476,9 @@ static const configoption_t options[] =
         CTX_FILESYSTEM|CTX_DISTRIBUTION,NULL},
 
     /* A pvfs server may manage more than one filesystem, and so a
-     * unique identifier is used to represent each one.  
+     * unique identifier is used to represent each one.
      * This option specifies such an ID (sometimes called a 'collection
-     * id') for the filesystem it is defined in.  
+     * id') for the filesystem it is defined in.
      *
      * The ID value can be any positive integer, no greater than
      * 2147483647 (INT32_MAX).  It is a required option in the Filesystem
@@ -488,7 +488,7 @@ static const configoption_t options[] =
         CTX_FILESYSTEM,NULL},
 
     /* maximum number of AIO operations that Trove will allow to run
-     * concurrently 
+     * concurrently
      */
     {"TroveMaxConcurrentIO", ARG_INT, get_trove_max_concurrent_io, NULL,
         CTX_DEFAULTS|CTX_SERVER_OPTIONS,"16"},
@@ -496,7 +496,7 @@ static const configoption_t options[] =
     /* The gossip interface in pvfs allows users to specify different
      * levels of logging for the pvfs server.  The output of these
      * different log levels is written to a file, which is specified in
-     * this option.  The value of the option must be the path pointing to a 
+     * this option.  The value of the option must be the path pointing to a
      * file with valid write permissions.  The Logfile option can be
      * specified for all the pvfs servers in the Defaults context or for
      * a particular server in the Global context.
@@ -504,7 +504,7 @@ static const configoption_t options[] =
     {"LogFile",ARG_STR, get_logfile,NULL,
         CTX_DEFAULTS|CTX_SERVER_OPTIONS,"/tmp/pvfs2-server.log"},
 
-    /* The LogType option can be used to control the destination of log 
+    /* The LogType option can be used to control the destination of log
      * messages from PVFS2 server.  The default value is "file", which causes
      * all log messages to be written to the file specified by the LogFile
      * parameter.  Another option is "syslog", which causes all log messages
@@ -526,9 +526,9 @@ static const configoption_t options[] =
      * a '-'.  Examples of possible values are:
      *
      * EventLogging flow,msgpair,io
-     * 
+     *
      * EventLogging -storage
-     * 
+     *
      * EventLogging -flow,-flowproto
      */
     {"EventLogging",ARG_LIST, get_event_logging_list,NULL,
@@ -542,8 +542,8 @@ static const configoption_t options[] =
      * of each unexpected request.  This parameter specifies the number
      * of requests for which to allocate space.
      *
-     * A default value is set in the Defaults context which will be be used 
-     * for all servers. 
+     * A default value is set in the Defaults context which will be be used
+     * for all servers.
      * However, the default value can also be overwritten by setting a separate value
      * in the ServerOptions context using the Option tag.
      */
@@ -564,13 +564,13 @@ static const configoption_t options[] =
         CTX_DEFAULTS|CTX_SERVER_OPTIONS,NULL},
 
      /* Current implementations of TCP on most systems use a window
-      * size that is too small for almost all uses of pvfs.  
+      * size that is too small for almost all uses of pvfs.
       * We recommend administators
       * should consider tuning the linux kernel maximum send and
       * receive buffer sizes via the /proc settings.  The
       * <a href="http://www.psc.edu/networking/projects/tcptune/#Linux">
       * PSC tcp tuning section for linux</a> has good information
-      * on how to do this.  
+      * on how to do this.
       *
       * The <i>TCPBufferSend</i> and
       * <i>TCPBufferReceive</i> options allows setting the tcp window
@@ -600,12 +600,12 @@ static const configoption_t options[] =
       */
      {"ServerJobBMITimeoutSecs",ARG_INT, get_server_job_bmi_timeout,NULL,
          CTX_DEFAULTS|CTX_SERVER_OPTIONS, "300"},
-     
+
      /* Specifies the timeout value in seconds for TROVE jobs on the server.
       */
      {"ServerJobFlowTimeoutSecs",ARG_INT, get_server_job_flow_timeout,NULL,
          CTX_DEFAULTS|CTX_SERVER_OPTIONS, "300"},
-     
+
      /* Specifies the timeout value in seconds for BMI jobs on the client.
       */
      {"ClientJobBMITimeoutSecs",ARG_INT, get_client_job_bmi_timeout,NULL,
@@ -631,18 +631,18 @@ static const configoption_t options[] =
       */
      {"PrecreateBatchSize",ARG_INT, get_precreate_batch_size,NULL,
          CTX_DEFAULTS|CTX_SERVER_OPTIONS, "512"},
- 
+
      /* Precreate pools will be "topped off" if they fall below this value */
      {"PrecreateLowThreshold",ARG_INT, get_precreate_low_threshold,NULL,
          CTX_DEFAULTS|CTX_SERVER_OPTIONS, "256"},
 
     /* Specifies if file stuffing should be enabled or not.  Default is
-     * enabled; this option is only provided for benchmarking purposes 
+     * enabled; this option is only provided for benchmarking purposes
      */
-    {"FileStuffing",ARG_STR, get_file_stuffing, NULL, 
+    {"FileStuffing",ARG_STR, get_file_stuffing, NULL,
         CTX_FILESYSTEM,"yes"},
 
-     /* This specifies the frequency (in milliseconds) 
+     /* This specifies the frequency (in milliseconds)
       * that performance monitor should be updated
       * when the pvfs server is running in admin mode.
       *
@@ -652,7 +652,7 @@ static const configoption_t options[] =
         CTX_DEFAULTS,"1000"},
 
     /* List the BMI modules to load when the server is started.  At present,
-     * only tcp, infiniband, and myrinet are valid BMI modules.  
+     * only tcp, infiniband, and myrinet are valid BMI modules.
      * The format of the list is a comma separated list of one of:
      *
      * bmi_tcp
@@ -709,7 +709,7 @@ static const configoption_t options[] =
         CTX_DEFAULTS|CTX_SERVER_OPTIONS,"usec"},
 
     /* --- end default options for all servers */
-    
+
 
     /* buffer size to use for bulk data transfers */
     {"FlowBufferSizeBytes", ARG_INT,
@@ -719,7 +719,7 @@ static const configoption_t options[] =
     {"FlowBuffersPerFlow", ARG_INT,
          get_flow_buffers_per_flow, NULL, CTX_FILESYSTEM,"8"},
 
-    /* 
+    /*
      * File-system export options
      *
      * Define options that will influence the way a file-system gets exported
@@ -727,43 +727,43 @@ static const configoption_t options[] =
      */
 
     /* RootSquash option specifies whether the exported file-system needs to
-    *  squash accesses by root. This is an optional parameter that needs 
+    *  squash accesses by root. This is an optional parameter that needs
     *  to be specified as part of the ExportOptions
-     * context and is a list of BMI URL specification of client addresses 
-     * for which RootSquash has to be enforced. 
+     * context and is a list of BMI URL specification of client addresses
+     * for which RootSquash has to be enforced.
      *
      * RootSquash tcp://192.168.2.0@24 tcp://10.0.0.* tcp://192.168.* ...
      */
     {"RootSquash", ARG_LIST, get_root_squash, NULL,
         CTX_EXPORT, ""},
-  
-    /* RootSquashExceptions option specifies exceoptions to the RootSquash 
-     * list. This is an optional parameter that needs to be specified as 
-     * part of the ExportOptions context and is a list of BMI URL 
+
+    /* RootSquashExceptions option specifies exceoptions to the RootSquash
+     * list. This is an optional parameter that needs to be specified as
+     * part of the ExportOptions context and is a list of BMI URL
      * specification of client addresses for which RootSquash
-     * has to be enforced. 
+     * has to be enforced.
      * RootSquash tcp://192.168.2.0@24 tcp://10.0.0.* tcp://192.168.* ...
      */
     {"RootSquashExceptions", ARG_LIST, get_root_squash_exceptions, NULL,
         CTX_EXPORT, ""},
 
     /* ReadOnly option specifies whether the exported file-system needs to
-    *  disallow write accesses from clients or anything that modifies the 
+    *  disallow write accesses from clients or anything that modifies the
     *  state of the file-system.
-     * This is an optional parameter that needs to be specified as part of 
-     * the ExportOptions context and is a list of BMI URL specification of 
+     * This is an optional parameter that needs to be specified as part of
+     * the ExportOptions context and is a list of BMI URL specification of
      * client addresses for which ReadOnly has to be enforced.
-     * An example: 
+     * An example:
      *
      * ReadOnly tcp://192.168.2.0@24 tcp://10.0.0.* tcp://192.168.* ...
      */
     {"ReadOnly", ARG_LIST,  get_read_only,    NULL,
         CTX_EXPORT, ""},
 
-    /* AllSquash option specifies whether the exported file-system needs to 
+    /* AllSquash option specifies whether the exported file-system needs to
     *  squash all accesses to the file-system to a specified uid/gid!
-     * This is an optional parameter that needs to be specified as part of 
-     * the ExportOptions context and is a list of BMI URL specification of client 
+     * This is an optional parameter that needs to be specified as part of
+     * the ExportOptions context and is a list of BMI URL specification of client
      * addresses for which AllSquash has to be enforced.
      * An example:
      *
@@ -772,10 +772,10 @@ static const configoption_t options[] =
     {"AllSquash", ARG_LIST, get_all_squash,   NULL,
         CTX_EXPORT, ""},
 
-    /* AnonUID and AnonGID are 2 integers that tell the servers to translate 
+    /* AnonUID and AnonGID are 2 integers that tell the servers to translate
     *  the requesting clients' uid/gid to the specified ones whenever AllSquash
     *  is specified!
-     * If these are not specified and AllSquash is specified then the uid used 
+     * If these are not specified and AllSquash is specified then the uid used
      * will be that of nobody and gid that of nobody.
      * An example:
      *
@@ -797,27 +797,27 @@ static const configoption_t options[] =
      * optional parameter that can be specified in the StorageHints context.
      */
     {"HandleRecycleTimeoutSecs", ARG_INT,
-         get_handle_recycle_timeout_seconds, NULL, 
+         get_handle_recycle_timeout_seconds, NULL,
          CTX_STORAGEHINTS,"360"},
-    
-    /* The TROVE layer (server side storage layer) 
-     * has an attribute caching component that 
+
+    /* The TROVE layer (server side storage layer)
+     * has an attribute caching component that
      * caches stored attributes.  This is used to improve the performance of
      * metadata accesses.  The AttrCacheKeywords option is a list of the
-     * object types that should get cached in the attribute cache.  
+     * object types that should get cached in the attribute cache.
      * The possible values for this option are:
      *
      * dh - (datafile handles) This will cache the array of datafile handles for
      *      each logical file in this filesystem
-     * 
+     *
      * md - (metafile distribution) This will cache (for each logical file)
      *      the file distribution information used to create/manage
-     *      the datafiles.  
+     *      the datafiles.
      *
-     * de - (directory entries) This will cache the handles of 
+     * de - (directory entries) This will cache the handles of
      *      the directory entries in this filesystem
      *
-     * st - (symlink target) This will cache the target path 
+     * st - (symlink target) This will cache the target path
      *      for the symbolic links in this filesystem
      *
      * The format of this option is a comma-separated list of one or more
@@ -826,10 +826,10 @@ static const configoption_t options[] =
      * AttrCacheKeywords dh,md,de,st
      */
     {"AttrCacheKeywords",ARG_LIST, get_attr_cache_keywords_list,NULL,
-        CTX_STORAGEHINTS, 
+        CTX_STORAGEHINTS,
         DATAFILE_HANDLES_KEYSTR","METAFILE_DIST_KEYSTR","
         DIRECTORY_ENTRY_KEYSTR","SYMLINK_TARGET_KEYSTR},
-    
+
     /* The attribute cache in the TROVE layer mentioned in the documentation
      * for the AttrCacheKeywords option is managed as a hashtable.  The
      * AttrCacheSize adjusts the number of buckets that this hashtable contains.
@@ -839,28 +839,28 @@ static const configoption_t options[] =
     {"AttrCacheSize",ARG_INT, get_attr_cache_size, NULL,
         CTX_STORAGEHINTS,"511"},
 
-    /* This option specifies the max cache size of the attribute cache 
+    /* This option specifies the max cache size of the attribute cache
      * in the TROVE layer mentioned in the documentation
      * for the AttrCacheKeywords option.  This value can be adjusted for
      * better performance.
      */
     {"AttrCacheMaxNumElems",ARG_INT,get_attr_cache_max_num_elems,NULL,
         CTX_STORAGEHINTS,"1024"},
-    
+
     /* The TroveSyncMeta option allows users to turn off metadata
      * synchronization with every metadata write.  This can greatly improve
      * performance.  In general, this value should probably be set to yes,
      * otherwise metadata transaction could be lost in the event of server
      * failover.
      */
-    {"TroveSyncMeta",ARG_STR, get_trove_sync_meta, NULL, 
+    {"TroveSyncMeta",ARG_STR, get_trove_sync_meta, NULL,
         CTX_STORAGEHINTS,"yes"},
 
     /* The TroveSyncData option allows users to turn off datafile
      * synchronization with every write operation.  This can greatly improve
      * performance, but may cause lost data in the event of server failover.
      */
-    {"TroveSyncData",ARG_STR, get_trove_sync_data, NULL, 
+    {"TroveSyncData",ARG_STR, get_trove_sync_data, NULL,
         CTX_STORAGEHINTS,"yes"},
 
     {"DBCacheSizeBytes", ARG_INT, get_db_cache_size_bytes, NULL,
@@ -872,19 +872,19 @@ static const configoption_t options[] =
     {"DBCacheType", ARG_STR, get_db_cache_type, NULL,
         CTX_STORAGEHINTS, "sys"},
 
-    /* This option specifies a parameter name to be passed to the 
+    /* This option specifies a parameter name to be passed to the
      * distribution to be used.  This option should be immediately
      * followed by a Value option.
      */
-    {"Param", ARG_STR, get_param, NULL, 
+    {"Param", ARG_STR, get_param, NULL,
         CTX_DISTRIBUTION,NULL},
-    
+
     /* This option specifies the value of the parameter who's name
      * was specified in the previous option.
      */
-    {"Value", ARG_INT, get_value, NULL, 
+    {"Value", ARG_INT, get_value, NULL,
         CTX_DISTRIBUTION,NULL},
-    
+
     /* This option specifies the default number of datafiles to use
      * when a new file is created.  The value is passed to the distribution
      * and it determines whether to use that value or not.
@@ -913,7 +913,7 @@ static const configoption_t options[] =
      * for large I/O accesses.  For local storage, including RAID setups,
      * the alt-aio method is recommended.
      *
-     * <li>null-aio.  This method is an implementation 
+     * <li>null-aio.  This method is an implementation
      * that does no disk I/O at all
      * and is only useful for development or debugging purposes.  It can
      * be used to test the performance of the network without doing I/O to disk.
@@ -922,19 +922,19 @@ static const configoption_t options[] =
      * </ul>
      *
      * Note that this option can be specified in either the <a href="#Defaults">
-     * Defaults</a> context of the main fs.conf, or in a filesystem specific 
+     * Defaults</a> context of the main fs.conf, or in a filesystem specific
      * <a href="#StorageHints">StorageHints</a>
-     * context, but the semantics of TroveMethod in the 
+     * context, but the semantics of TroveMethod in the
      * <a href="#Defaults">Defaults</a>
      * context is different from other options.  The TroveMethod in the
-     * <a href="#Defaults">Defaults</a> context only specifies which 
+     * <a href="#Defaults">Defaults</a> context only specifies which
      * method is used at
      * server initialization.  It does not specify the default TroveMethod
      * for all the filesystems the server supports.  To set the TroveMethod
-     * for a filesystem, the TroveMethod must be placed in the 
+     * for a filesystem, the TroveMethod must be placed in the
      * <a href="#StorageHints">StorageHints</a> context for that filesystem.
      */
-    {"TroveMethod", ARG_STR, get_trove_method, NULL, 
+    {"TroveMethod", ARG_STR, get_trove_method, NULL,
         CTX_DEFAULTS|CTX_STORAGEHINTS, "alt-aio"},
 
     /* Specifies the file system's key for use in HMAC-based digests of
@@ -1015,7 +1015,7 @@ int PINT_parse_config(
     /* read in the fs.conf defaults config file */
     config_s->configuration_context = CTX_GLOBAL;
     configfile = PINT_dotconf_create(config_s->fs_config_filename,
-                                     options, (void *)config_s, 
+                                     options, (void *)config_s,
                                      CASE_INSENSITIVE);
     if (!configfile)
     {
@@ -1026,7 +1026,7 @@ int PINT_parse_config(
     config_s->private_data = configfile;
     configfile->errorhandler = (dotconf_errorhandler_t)errorhandler;
     configfile->contextchecker = (dotconf_contextchecker_t)contextchecker;
-    
+
     if(PINT_dotconf_command_loop(configfile) == 0)
     {
         /* NOTE: dotconf error handler will log message */
@@ -1034,12 +1034,12 @@ int PINT_parse_config(
     }
     PINT_dotconf_cleanup(configfile);
 
-    if (server_alias_name) 
+    if (server_alias_name)
     {
         struct host_alias_s *halias;
         halias = find_host_alias_ptr_by_alias(
                                 config_s, server_alias_name, &config_s->host_index);
-        if (!halias || !halias->bmi_address) 
+        if (!halias || !halias->bmi_address)
         {
             gossip_err("Configuration file error. "
                        "No host ID specified for alias %s.\n", server_alias_name);
@@ -1069,7 +1069,7 @@ int PINT_parse_config(
         gossip_err("Configuration file error. No flow module specified\n");
 	return 1;
     }
-    
+
     /* Users don't need to learn about this unless they want to
     */
     if (!config_s->perf_update_interval)
@@ -1078,7 +1078,7 @@ int PINT_parse_config(
                    "No PerfUpdateInterval specified.\n");
         return 1;
     }
-    
+
     return 0;
 }
 
@@ -1092,7 +1092,7 @@ const char *contextchecker(command_t *cmd, unsigned long mask)
     }
     return NULL;
 }
-    
+
 FUNC_ERRORHANDLER(errorhandler)
 {
     gossip_err("Error: %s line %ld: %s", configfile->filename,
@@ -1102,7 +1102,7 @@ FUNC_ERRORHANDLER(errorhandler)
 
 DOTCONF_CB(get_logstamp)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     if(config_s->configuration_context == CTX_SERVER_OPTIONS &&
@@ -1137,7 +1137,7 @@ DOTCONF_CB(get_logstamp)
 
 DOTCONF_CB(get_storage_space)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     if(config_s->configuration_context == CTX_SERVER_OPTIONS &&
        config_s->my_server_options == 0)
@@ -1155,7 +1155,7 @@ DOTCONF_CB(get_storage_space)
 
 DOTCONF_CB(enter_defaults_context)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->configuration_context = CTX_DEFAULTS;
 
@@ -1165,7 +1165,7 @@ DOTCONF_CB(enter_defaults_context)
 
 DOTCONF_CB(exit_defaults_context)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->configuration_context = CTX_GLOBAL;
     return NULL;
@@ -1174,7 +1174,7 @@ DOTCONF_CB(exit_defaults_context)
 #ifdef USE_TRUSTED
 DOTCONF_CB(enter_security_context)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->configuration_context = CTX_SECURITY;
     return NULL;
@@ -1182,7 +1182,7 @@ DOTCONF_CB(enter_security_context)
 
 DOTCONF_CB(exit_security_context)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->configuration_context = CTX_GLOBAL;
     return NULL;
@@ -1191,7 +1191,7 @@ DOTCONF_CB(exit_security_context)
 
 DOTCONF_CB(enter_aliases_context)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->configuration_context = CTX_ALIASES;
     return NULL;
@@ -1199,7 +1199,7 @@ DOTCONF_CB(enter_aliases_context)
 
 DOTCONF_CB(exit_aliases_context)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->configuration_context = CTX_GLOBAL;
     return NULL;
@@ -1207,7 +1207,7 @@ DOTCONF_CB(exit_aliases_context)
 
 DOTCONF_CB(enter_filesystem_context)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     struct filesystem_configuration_s *fs_conf = NULL;
 
@@ -1247,7 +1247,7 @@ DOTCONF_CB(enter_filesystem_context)
 DOTCONF_CB(exit_filesystem_context)
 {
     struct filesystem_configuration_s *fs_conf = NULL;
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     fs_conf = (struct filesystem_configuration_s *)
@@ -1271,7 +1271,7 @@ DOTCONF_CB(exit_filesystem_context)
 
 DOTCONF_CB(enter_storage_hints_context)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->configuration_context = CTX_STORAGEHINTS;
 
@@ -1281,7 +1281,7 @@ DOTCONF_CB(enter_storage_hints_context)
 
 DOTCONF_CB(exit_storage_hints_context)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->configuration_context = CTX_FILESYSTEM;
     return NULL;
@@ -1289,7 +1289,7 @@ DOTCONF_CB(exit_storage_hints_context)
 
 DOTCONF_CB(enter_export_options_context)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->configuration_context = CTX_EXPORT;
 
@@ -1299,7 +1299,7 @@ DOTCONF_CB(enter_export_options_context)
 
 DOTCONF_CB(exit_export_options_context)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->configuration_context = CTX_FILESYSTEM;
     return NULL;
@@ -1307,7 +1307,7 @@ DOTCONF_CB(exit_export_options_context)
 
 DOTCONF_CB(enter_server_options_context)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->configuration_context = CTX_SERVER_OPTIONS;
 
@@ -1317,7 +1317,7 @@ DOTCONF_CB(enter_server_options_context)
 
 DOTCONF_CB(exit_server_options_context)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->configuration_context = CTX_GLOBAL;
     config_s->my_server_options = 0;
@@ -1349,7 +1349,7 @@ DOTCONF_CB(check_this_server)
 
 DOTCONF_CB(enter_mhranges_context)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->configuration_context = CTX_METAHANDLERANGES;
     return NULL;
@@ -1357,7 +1357,7 @@ DOTCONF_CB(enter_mhranges_context)
 
 DOTCONF_CB(exit_mhranges_context)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     struct filesystem_configuration_s *fs_conf = NULL;
 
@@ -1375,7 +1375,7 @@ DOTCONF_CB(exit_mhranges_context)
 
 DOTCONF_CB(enter_dhranges_context)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->configuration_context = CTX_DATAHANDLERANGES;
     return NULL;
@@ -1383,7 +1383,7 @@ DOTCONF_CB(enter_dhranges_context)
 
 DOTCONF_CB(exit_dhranges_context)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     struct filesystem_configuration_s *fs_conf = NULL;
 
@@ -1401,7 +1401,7 @@ DOTCONF_CB(exit_dhranges_context)
 
 DOTCONF_CB(enter_distribution_context)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->configuration_context = CTX_DISTRIBUTION;
     return NULL;
@@ -1409,7 +1409,7 @@ DOTCONF_CB(enter_distribution_context)
 
 DOTCONF_CB(exit_distribution_context)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->configuration_context = CTX_FILESYSTEM;
     return NULL;
@@ -1417,7 +1417,7 @@ DOTCONF_CB(exit_distribution_context)
 
 DOTCONF_CB(get_unexp_req)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     if(config_s->configuration_context == CTX_SERVER_OPTIONS &&
        config_s->my_server_options == 0)
@@ -1472,7 +1472,7 @@ DOTCONF_CB(get_tcp_bind_specific)
 
 DOTCONF_CB(get_server_job_bmi_timeout)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     if(config_s->configuration_context == CTX_SERVER_OPTIONS &&
        config_s->my_server_options == 0)
@@ -1485,7 +1485,7 @@ DOTCONF_CB(get_server_job_bmi_timeout)
 
 DOTCONF_CB(get_precreate_batch_size)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     if(config_s->configuration_context == CTX_SERVER_OPTIONS &&
        config_s->my_server_options == 0)
@@ -1498,7 +1498,7 @@ DOTCONF_CB(get_precreate_batch_size)
 
 DOTCONF_CB(get_precreate_low_threshold)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     if(config_s->configuration_context == CTX_SERVER_OPTIONS &&
        config_s->my_server_options == 0)
@@ -1511,7 +1511,7 @@ DOTCONF_CB(get_precreate_low_threshold)
 
 DOTCONF_CB(get_server_job_flow_timeout)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     if(config_s->configuration_context == CTX_SERVER_OPTIONS &&
        config_s->my_server_options == 0)
@@ -1524,7 +1524,7 @@ DOTCONF_CB(get_server_job_flow_timeout)
 
 DOTCONF_CB(get_client_job_bmi_timeout)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->client_job_bmi_timeout = cmd->data.value;
     return NULL;
@@ -1532,7 +1532,7 @@ DOTCONF_CB(get_client_job_bmi_timeout)
 
 DOTCONF_CB(get_client_job_flow_timeout)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->client_job_flow_timeout = cmd->data.value;
     return NULL;
@@ -1540,7 +1540,7 @@ DOTCONF_CB(get_client_job_flow_timeout)
 
 DOTCONF_CB(get_client_retry_limit)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->client_retry_limit = cmd->data.value;
     return NULL;
@@ -1548,7 +1548,7 @@ DOTCONF_CB(get_client_retry_limit)
 
 DOTCONF_CB(get_client_retry_delay)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->client_retry_delay_ms = cmd->data.value;
     return NULL;
@@ -1556,7 +1556,7 @@ DOTCONF_CB(get_client_retry_delay)
 
 DOTCONF_CB(get_perf_update_interval)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->perf_update_interval = cmd->data.value;
     return NULL;
@@ -1564,7 +1564,7 @@ DOTCONF_CB(get_perf_update_interval)
 
 DOTCONF_CB(get_logfile)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     /* free whatever was added in set_defaults phase */
     if(config_s->configuration_context == CTX_SERVER_OPTIONS &&
@@ -1580,7 +1580,7 @@ DOTCONF_CB(get_logfile)
 
 DOTCONF_CB(get_logtype)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     /* free whatever was added in set_defaults phase */
     if(config_s->configuration_context == CTX_SERVER_OPTIONS &&
@@ -1597,7 +1597,7 @@ DOTCONF_CB(get_logtype)
 
 DOTCONF_CB(get_event_logging_list)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     int i = 0, len = 0;
     char buf[512] = {0};
@@ -1608,7 +1608,7 @@ DOTCONF_CB(get_event_logging_list)
     {
         return NULL;
     }
-    if (config_s->event_logging != NULL) 
+    if (config_s->event_logging != NULL)
     {
         free(config_s->event_logging);
         config_s->event_logging = NULL;
@@ -1624,7 +1624,7 @@ DOTCONF_CB(get_event_logging_list)
 
 DOTCONF_CB(get_event_tracing)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     if(config_s->configuration_context == CTX_SERVER_OPTIONS &&
        config_s->my_server_options == 0)
@@ -1648,7 +1648,7 @@ DOTCONF_CB(get_flow_module_list)
     char buf[512] = {0};
     char *ptr = buf;
 
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     if (config_s->flow_modules != NULL)
@@ -1735,8 +1735,8 @@ static int setup_netmasks(int count, char **bmi_address, int *netmasks)
     int i;
     for (i = 0; i < count; i++)
     {
-        /* 
-         * if we find a @ then we parse the 
+        /*
+         * if we find a @ then we parse the
          * chars at the end of it and make sure
          * that it is less than equal to 32,
          * else we check if there is a wildcard (*)
@@ -1768,7 +1768,7 @@ static int setup_netmasks(int count, char **bmi_address, int *netmasks)
 DOTCONF_CB(get_root_squash)
 {
     struct filesystem_configuration_s *fs_conf = NULL;
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     fs_conf = (struct filesystem_configuration_s *)
@@ -1779,7 +1779,7 @@ DOTCONF_CB(get_root_squash)
     {
         fs_conf->exp_flags &= ~TROVE_EXP_ROOT_SQUASH;
     }
-    else 
+    else
     {
         fs_conf->exp_flags |= TROVE_EXP_ROOT_SQUASH;
         fs_conf->root_squash_netmasks = (int *) calloc(cmd->arg_count, sizeof(int));
@@ -1798,7 +1798,7 @@ DOTCONF_CB(get_root_squash)
         }
         fs_conf->root_squash_count = cmd->arg_count;
         /* Setup the netmasks */
-        if (setup_netmasks(fs_conf->root_squash_count, fs_conf->root_squash_hosts, 
+        if (setup_netmasks(fs_conf->root_squash_count, fs_conf->root_squash_hosts,
                     fs_conf->root_squash_netmasks) < 0)
         {
             free(fs_conf->root_squash_netmasks);
@@ -1816,7 +1816,7 @@ DOTCONF_CB(get_root_squash)
 DOTCONF_CB(get_root_squash_exceptions)
 {
     struct filesystem_configuration_s *fs_conf = NULL;
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     fs_conf = (struct filesystem_configuration_s *)
@@ -1841,7 +1841,7 @@ DOTCONF_CB(get_root_squash_exceptions)
         }
         fs_conf->root_squash_exceptions_count = cmd->arg_count;
         /* Setup the netmasks */
-        if (setup_netmasks(fs_conf->root_squash_exceptions_count, fs_conf->root_squash_exceptions_hosts, 
+        if (setup_netmasks(fs_conf->root_squash_exceptions_count, fs_conf->root_squash_exceptions_hosts,
                     fs_conf->root_squash_exceptions_netmasks) < 0)
         {
             free(fs_conf->root_squash_exceptions_netmasks);
@@ -1860,13 +1860,13 @@ DOTCONF_CB(get_root_squash_exceptions)
 DOTCONF_CB(get_read_only)
 {
     struct filesystem_configuration_s *fs_conf = NULL;
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     fs_conf = (struct filesystem_configuration_s *)
         PINT_llist_head(config_s->file_systems);
     assert(fs_conf);
-    
+
     if (cmd->arg_count == 0)
     {
         fs_conf->exp_flags &= ~TROVE_EXP_READ_ONLY;
@@ -1906,7 +1906,7 @@ DOTCONF_CB(get_read_only)
 DOTCONF_CB(get_all_squash)
 {
     struct filesystem_configuration_s *fs_conf = NULL;
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     fs_conf = (struct filesystem_configuration_s *)
@@ -1917,7 +1917,7 @@ DOTCONF_CB(get_all_squash)
     {
         fs_conf->exp_flags &= ~TROVE_EXP_ALL_SQUASH;
     }
-    else 
+    else
     {
         fs_conf->exp_flags |= TROVE_EXP_ALL_SQUASH;
         fs_conf->all_squash_netmasks = (int *) calloc(cmd->arg_count, sizeof(int));
@@ -1935,7 +1935,7 @@ DOTCONF_CB(get_all_squash)
             return("Could not allocate memory for all_squash_hosts\n");
         }
         fs_conf->all_squash_count = cmd->arg_count;
-        if (setup_netmasks(fs_conf->all_squash_count, fs_conf->all_squash_hosts, 
+        if (setup_netmasks(fs_conf->all_squash_count, fs_conf->all_squash_hosts,
                     fs_conf->all_squash_netmasks) < 0)
         {
             free(fs_conf->all_squash_netmasks);
@@ -1944,7 +1944,7 @@ DOTCONF_CB(get_all_squash)
             fs_conf->all_squash_count = 0;
             return("Could not setup netmasks for all_squash_hosts\n");
         }
-        gossip_debug(GOSSIP_SERVER_DEBUG, "Parsed %d AllSquash wildcard entries\n", 
+        gossip_debug(GOSSIP_SERVER_DEBUG, "Parsed %d AllSquash wildcard entries\n",
                 cmd->arg_count);
     }
     return NULL;
@@ -1955,7 +1955,7 @@ DOTCONF_CB(get_anon_uid)
     struct filesystem_configuration_s *fs_conf = NULL;
     unsigned int tmp_var;
     int ret = -1;
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     fs_conf = (struct filesystem_configuration_s *)
@@ -1975,7 +1975,7 @@ DOTCONF_CB(get_anon_gid)
     struct filesystem_configuration_s *fs_conf = NULL;
     unsigned int tmp_var;
     int ret = -1;
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     fs_conf = (struct filesystem_configuration_s *)
@@ -1996,7 +1996,7 @@ DOTCONF_CB(get_bmi_module_list)
     char buf[512] = {0};
     char *ptr = buf;
 
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     if (config_s->bmi_modules != NULL)
@@ -2019,7 +2019,7 @@ DOTCONF_CB(get_trusted_portlist)
 {
     long port1, port2;
     char *separator = NULL, *option = NULL, *endptr = NULL;
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     option = strdup(cmd->data.str);
@@ -2055,18 +2055,18 @@ DOTCONF_CB(get_trusted_portlist)
     config_s->allowed_ports[0] = port1;
     config_s->allowed_ports[1] = port2;
     /* okay, we enable trusted ports */
-    config_s->ports_enabled = 1; 
+    config_s->ports_enabled = 1;
     return NULL;
 }
 
 DOTCONF_CB(get_trusted_network)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     if (cmd->arg_count == 0)
     {
-      return NULL; 
+      return NULL;
     }
 
     config_s->allowed_masks = (int *) calloc(cmd->arg_count, sizeof(int));
@@ -2105,7 +2105,7 @@ DOTCONF_CB(get_trusted_network)
 DOTCONF_CB(get_handle_recycle_timeout_seconds)
 {
     struct filesystem_configuration_s *fs_conf = NULL;
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     fs_conf = (struct filesystem_configuration_s *)
@@ -2145,7 +2145,7 @@ static const char * replace_old_keystring(const char * oldkey)
 DOTCONF_CB(get_flow_buffer_size_bytes)
 {
     struct filesystem_configuration_s *fs_conf = NULL;
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     fs_conf = (struct filesystem_configuration_s *)
@@ -2157,7 +2157,7 @@ DOTCONF_CB(get_flow_buffer_size_bytes)
 DOTCONF_CB(get_flow_buffers_per_flow)
 {
     struct filesystem_configuration_s *fs_conf = NULL;
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     fs_conf = (struct filesystem_configuration_s *)
@@ -2179,7 +2179,7 @@ DOTCONF_CB(get_attr_cache_keywords_list)
     const char * rtok;
     struct filesystem_configuration_s *fs_conf = NULL;
 
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     fs_conf = (struct filesystem_configuration_s *)
@@ -2190,7 +2190,7 @@ DOTCONF_CB(get_attr_cache_keywords_list)
     {
         char ** tokens;
         int token_count, j;
-        
+
         token_count = PINT_split_string_list(
             &tokens, fs_conf->attr_cache_keywords);
 
@@ -2205,7 +2205,7 @@ DOTCONF_CB(get_attr_cache_keywords_list)
                 ptr += len + 1;
             }
         }
-                       
+
         PINT_free_string_list(tokens, token_count);
         free(fs_conf->attr_cache_keywords);
     }
@@ -2214,7 +2214,7 @@ DOTCONF_CB(get_attr_cache_keywords_list)
     {
         char ** tokens;
         int token_count, j;
-        
+
         token_count = PINT_split_string_list(
             &tokens, cmd->data.list[i]);
 
@@ -2242,7 +2242,7 @@ DOTCONF_CB(get_attr_cache_size)
 {
     struct filesystem_configuration_s *fs_conf = NULL;
 
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     fs_conf = (struct filesystem_configuration_s *)
@@ -2256,7 +2256,7 @@ DOTCONF_CB(get_attr_cache_size)
 DOTCONF_CB(get_attr_cache_max_num_elems)
 {
     struct filesystem_configuration_s *fs_conf = NULL;
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     fs_conf = (struct filesystem_configuration_s *)
@@ -2270,7 +2270,7 @@ DOTCONF_CB(get_attr_cache_max_num_elems)
 DOTCONF_CB(get_file_stuffing)
 {
     struct filesystem_configuration_s *fs_conf = NULL;
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     fs_conf = (struct filesystem_configuration_s *)
@@ -2297,7 +2297,7 @@ DOTCONF_CB(get_file_stuffing)
 DOTCONF_CB(get_trove_sync_meta)
 {
     struct filesystem_configuration_s *fs_conf = NULL;
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     fs_conf = (struct filesystem_configuration_s *)
@@ -2333,7 +2333,7 @@ DOTCONF_CB(get_trove_sync_meta)
 DOTCONF_CB(get_trove_sync_data)
 {
     struct filesystem_configuration_s *fs_conf = NULL;
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     fs_conf = (struct filesystem_configuration_s *)
@@ -2358,7 +2358,7 @@ DOTCONF_CB(get_trove_sync_data)
 
 DOTCONF_CB(get_db_cache_size_bytes)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     config_s->db_cache_size_bytes = cmd->data.value;
     return NULL;
@@ -2366,7 +2366,7 @@ DOTCONF_CB(get_db_cache_size_bytes)
 
 DOTCONF_CB(get_trove_max_concurrent_io)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     if(config_s->configuration_context == CTX_SERVER_OPTIONS &&
@@ -2382,7 +2382,7 @@ DOTCONF_CB(get_db_cache_type)
 {
     struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
-    
+
     if(strcmp(cmd->data.str, "sys") && strcmp(cmd->data.str, "mmap"))
     {
         return "Unsupported parameter supplied to DBCacheType option, must "
@@ -2405,7 +2405,7 @@ DOTCONF_CB(get_root_handle)
     struct filesystem_configuration_s *fs_conf = NULL;
     unsigned long long int tmp_var;
     int ret = -1;
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     fs_conf = (struct filesystem_configuration_s *)
@@ -2422,7 +2422,7 @@ DOTCONF_CB(get_root_handle)
 
 DOTCONF_CB(get_name)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     if (config_s->configuration_context == CTX_FILESYSTEM)
     {
@@ -2457,7 +2457,7 @@ DOTCONF_CB(get_name)
 DOTCONF_CB(get_filesystem_collid)
 {
     struct filesystem_configuration_s *fs_conf = NULL;
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     fs_conf = (struct filesystem_configuration_s *)
@@ -2476,13 +2476,13 @@ static int compare_aliases(void * vkey,
 {
     char * hostaliaskey1 = (char *)vkey;
     host_alias_s * alias2 = (host_alias_s *)valias2;
-    
+
     return strcmp(hostaliaskey1, alias2->host_alias);
 }
 
 DOTCONF_CB(get_alias_list)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     struct host_alias_s *cur_alias = NULL;
 
@@ -2490,7 +2490,7 @@ DOTCONF_CB(get_alias_list)
 
     /* prevent users from adding the same alias twice */
     if(config_s->host_aliases &&
-       PINT_llist_search(config_s->host_aliases, 
+       PINT_llist_search(config_s->host_aliases,
                       (void *)cmd->data.list[0],
                       compare_aliases))
     {
@@ -2506,7 +2506,7 @@ DOTCONF_CB(get_alias_list)
     {
         config_s->host_aliases = PINT_llist_new();
     }
-    
+
     PINT_llist_add_to_tail(config_s->host_aliases,(void *)cur_alias);
     return NULL;
 }
@@ -2517,7 +2517,7 @@ DOTCONF_CB(get_range_list)
     struct filesystem_configuration_s *fs_conf = NULL;
     struct host_handle_mapping_s *handle_mapping = NULL;
     PINT_llist **handle_range_list = NULL;
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
 
     fs_conf = (struct filesystem_configuration_s *)
@@ -2608,7 +2608,7 @@ DOTCONF_CB(get_range_list)
 
 DOTCONF_CB(get_param)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     distribution_param_configuration* param =
         malloc(sizeof(distribution_param_configuration));
@@ -2625,7 +2625,7 @@ DOTCONF_CB(get_param)
 
 DOTCONF_CB(get_value)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     distribution_param_configuration* param;
     param = (distribution_param_configuration*)PINT_llist_tail(
@@ -2639,7 +2639,7 @@ DOTCONF_CB(get_value)
 
 DOTCONF_CB(get_default_num_dfiles)
 {
-    struct server_configuration_s *config_s = 
+    struct server_configuration_s *config_s =
         (struct server_configuration_s *)cmd->context;
     struct filesystem_configuration_s *fs_conf = NULL;
 
@@ -2735,7 +2735,7 @@ DOTCONF_CB(get_trove_method)
             (struct filesystem_configuration_s *)
             PINT_llist_head(config_s->file_systems);
 
-        method = &fs_conf->trove_method; 
+        method = &fs_conf->trove_method;
     }
 
     if(!strcmp(cmd->data.str, "dbpf"))
@@ -2754,9 +2754,9 @@ DOTCONF_CB(get_trove_method)
     {
         *method = TROVE_METHOD_DBPF_DIRECTIO;
     }
-	else if(!strcmp(cmd->data.str, "wormupio"))
+	else if(!strcmp(cmd->data.str, "wormup-aio"))
     {
-        *method = TROVE_METHOD_DBPF_WORMUPIO;
+        *method = TROVE_METHOD_DBPF_WORMUPAIO;
     }
     else
     {
@@ -2829,7 +2829,7 @@ DOTCONF_CB(directio_timeout)
  *
  * Synopsis: De-allocates memory consumed internally
  *           by the specified server_configuration_s
- *           
+ *
  */
 void PINT_config_release(struct server_configuration_s *config_s)
 {
@@ -2998,7 +2998,7 @@ static int is_populated_filesystem_configuration(
              fs->meta_handle_ranges && fs->data_handle_ranges &&
              fs->root_handle) ? 1 : 0);
 }
-    
+
 static int is_root_handle_in_a_meta_range(
     struct server_configuration_s *config,
     struct filesystem_configuration_s *fs)
@@ -3292,7 +3292,7 @@ static void copy_filesystem(
             src_fs->attr_cache_max_num_elems;
         dest_fs->trove_sync_meta = src_fs->trove_sync_meta;
         dest_fs->trove_sync_data = src_fs->trove_sync_data;
- 
+
         /* copy all relevant export options */
         dest_fs->exp_flags    = src_fs->exp_flags;
         dest_fs->ro_count     = src_fs->ro_count;
@@ -3561,7 +3561,7 @@ int PINT_config_get_allowed_networks(
  * Returns:  char * (bmi_address) on success; NULL on failure
  *
  * Synopsis: retrieve the bmi_address matching the specified alias
- *           
+ *
  */
 char *PINT_config_get_host_addr_ptr(
     struct server_configuration_s *config_s,
@@ -3604,7 +3604,7 @@ char *PINT_config_get_host_addr_ptr(
  * Returns:  char * (alias) on success; NULL on failure
  *
  * Synopsis: retrieve the alias matching the specified bmi_address
- *           
+ *
  */
 char *PINT_config_get_host_alias_ptr(
     struct server_configuration_s *config_s,
@@ -3648,7 +3648,7 @@ char *PINT_config_get_host_alias_ptr(
  *
  * Synopsis: return the meta handle range (string) on the specified
  *           filesystem that matches the host specific configuration
- *           
+ *
  */
 char *PINT_config_get_meta_handle_range_str(
     struct server_configuration_s *config_s,
@@ -3709,7 +3709,7 @@ int PINT_config_get_meta_handle_extent_array(
                     if (strcmp(cur_h_mapping->alias_mapping->host_alias,
                                my_alias) == 0)
                     {
-                        extent_array->extent_count = 
+                        extent_array->extent_count =
                             cur_h_mapping->handle_extent_array.extent_count;
                         extent_array->extent_array = malloc(
                             (extent_array->extent_count *
@@ -3742,7 +3742,7 @@ int PINT_config_get_meta_handle_extent_array(
  *
  * Synopsis: return the data handle range (string) on the specified
  *           filesystem that matches the host specific configuration
- *           
+ *
  */
 char *PINT_config_get_data_handle_range_str(
     struct server_configuration_s *config_s,
@@ -3764,7 +3764,7 @@ char *PINT_config_get_data_handle_range_str(
  * Synopsis: return the meta handle range and data handle range strings
  *           on the specified filesystem that matches the host specific
  *           configuration merged as one single handle range
- *           
+ *
  */
 char *PINT_config_get_merged_handle_range_str(
     struct server_configuration_s *config_s,
@@ -3940,7 +3940,7 @@ int PINT_config_is_valid_configuration(
     int ret = 0, fs_count = 0;
     PINT_llist *cur = NULL;
     struct filesystem_configuration_s *cur_fs = NULL;
-    
+
     if (config_s && config_s->bmi_modules && config_s->event_logging &&
         config_s->logfile)
     {
@@ -3998,7 +3998,7 @@ int PINT_config_is_valid_collection_id(
 }
 
 /*
-  returns pointer to fs config if the config object has information on 
+  returns pointer to fs config if the config object has information on
   the specified filesystem; NULL otherwise
 */
 struct filesystem_configuration_s* PINT_config_find_fs_name(
@@ -4169,7 +4169,7 @@ int PINT_config_get_fs_key(
     {
         fs_conf = PINT_config_find_fs_id(config, fs_id);
     }
-    
+
     if(!fs_conf)
     {
         gossip_err("Could not locate fs_conf for fs_id %d\n", fs_id);
@@ -4182,7 +4182,7 @@ int PINT_config_get_fs_key(
         *key = NULL;
         return 0;
     }
-    
+
     b64len = strlen(fs_conf->secret_key);
     b64buf = malloc(b64len+1);
     if(!b64buf)
@@ -4205,11 +4205,11 @@ int PINT_config_get_fs_key(
         BIO_free_all(bio);
         return -PVFS_ENOMEM;
    }
-    
+
     *length = BIO_read(bio, *key, len);
 
     free(b64buf);
-    
+
     BIO_free_all(bio);
     return 0;
 #endif /* WITH_OPENSSL */
