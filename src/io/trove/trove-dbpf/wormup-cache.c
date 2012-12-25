@@ -10,15 +10,10 @@
 #include "cache.h"
 #include "ncac-lru.h"
 
-/*
- * lookup_cache_item: Given the index of an extent, look up whether this
- * extent is cached or not.
- *     Cached: retured the extent
- *     NOT cached: return NULL.
- */
-struct extent * lookup_cache_item(struct inode *mapping, unsigned long index)
+
+struct wormup_cache_extent * wormup_lookup_cache_item(struct inode *mapping, unsigned long index)
 {
-    struct extent *extent;
+    struct wormup_cache_extent *extent;
 
     extent = radix_tree_lookup(&mapping->page_tree, index);
 
@@ -106,13 +101,12 @@ static void remove_cache_item_no_policy(struct extent *extent)
     extent->mapping = NULL;
 }
 
-static void remove_cache_item_with_policy(struct extent *victim, int policy)
+static void wormup_remove_cache_item_with_policy(struct wormup_cache_extent *victim, int policy)
 {
-    struct cache_stack *cache;
+    struct wormup_cache_stack *cache;
 
-    cache = get_extent_cache_stack(victim);
+    cache = wormup_get_extent_cache_stack(victim);
     if ( NULL == cache ){
-        NCAC_error("extent cache stack is NULL");
         return;
     }
     switch (policy){
@@ -125,16 +119,16 @@ static void remove_cache_item_with_policy(struct extent *victim, int policy)
     }
 }
 
-void remove_cache_item(struct extent *extent, int policy)
+void remove_cache_item(struct wormup_cache_extent *extent, int policy)
 {
 
     remove_cache_item_with_policy(extent, policy);
     remove_cache_item_no_policy(extent);
 }
 
-struct extent * get_free_extent_list_item(struct list_head *list)
+struct wormup_cache_extent * wormup_get_free_extent_list_item(struct list_head *list)
 {
-    struct extent *new;
+    struct wormup_cache_extent *new;
     struct list_head *delete;
 
     if ( list_empty(list) ) return NULL;
@@ -142,7 +136,7 @@ struct extent * get_free_extent_list_item(struct list_head *list)
     delete = list->next;
     list_del_init(delete);
 
-    new = list_entry(delete->prev, struct extent, list);
+    new = list_entry(delete->prev, struct wormup_cache_extent, list);
 
     return new;
 }
@@ -187,10 +181,10 @@ int is_extent_discardable(struct extent *victim)
 }
 
 /* hit_cache_item: cache hit, change the position according to the policy */
-void hit_cache_item(struct extent *extent, int cache_policy)
+void wormup_hit_cache_item(struct wormup_cache_extent *extent, int cache_policy)
 {
-    remove_cache_item_with_policy(extent, cache_policy);
-    add_cache_item_with_policy(extent, cache_policy);
+    wormup_remove_cache_item_with_policy(extent, cache_policy);
+    wormup_add_cache_item_with_policy(extent, cache_policy);
     return;
 }
 
