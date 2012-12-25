@@ -27,7 +27,8 @@
 
 /* global variable */
 WORMUP_dev dev;
-//Store opened inode
+
+/* store opened inode */
 struct wormup_cache_inode *wormup_inode_arr[WORMUP_MAX_INODE_NUM];
 
 

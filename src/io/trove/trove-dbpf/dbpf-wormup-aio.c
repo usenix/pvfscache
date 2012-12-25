@@ -4,26 +4,26 @@
  */
 
 #include "quicklist.h"
-#include "dbpf-alt-aio.h"
+#include "dbpf-wormup-aio.h"
 #include "pthread.h"
 #include "dbpf.h"
 #include <string.h>
 #include <sys/stat.h>
 
-static int alt_lio_listio(int mode, struct aiocb * const list[],
+static int wormup_lio_listio(int mode, struct aiocb * const list[],
                           int nent, struct sigevent *sig);
-static int alt_aio_error(const struct aiocb *aiocbp);
-static ssize_t alt_aio_return(struct aiocb *aiocbp);
-static int alt_aio_cancel(int filedesc, struct aiocb * aiocbp);
-static int alt_aio_suspend(const struct aiocb * const list[], int nent,
+static int wormup_aio_error(const struct aiocb *aiocbp);
+static ssize_t wormup_aio_return(struct aiocb *aiocbp);
+static int wormup_aio_cancel(int filedesc, struct aiocb * aiocbp);
+static int wormup_aio_suspend(const struct aiocb * const list[], int nent,
                            const struct timespec * timeout);
-static int alt_aio_read(struct aiocb * aiocbp);
-static int alt_aio_write(struct aiocb * aiocbp);
-static int alt_aio_fsync(int operation, struct aiocb * aiocbp);
+static int wormup_aio_read(struct aiocb * aiocbp);
+static int wormup_aio_write(struct aiocb * aiocbp);
+static int wormup_aio_fsync(int operation, struct aiocb * aiocbp);
 
-static struct dbpf_aio_ops alt_aio_ops;
+static struct dbpf_aio_ops wormup_aio_ops;
 
-struct alt_aio_item
+struct wormup_aio_item
 {
     struct aiocb *cb_p;
     struct sigevent *sig;
@@ -32,12 +32,12 @@ struct alt_aio_item
     pthread_t *tids;
     int nent;
 };
-static void* alt_lio_thread(void*);
+static void* wormup_lio_thread(void*);
 
-int alt_lio_listio(int mode, struct aiocb * const list[],
+int wormup_lio_listio(int mode, struct aiocb * const list[],
                    int nent, struct sigevent *sig)
 {
-    struct alt_aio_item* tmp_item;
+    struct wormup_aio_item* tmp_item;
     int ret, i;
     pthread_t *tids;
     pthread_attr_t attr;
@@ -52,12 +52,12 @@ int alt_lio_listio(int mode, struct aiocb * const list[],
     for(i = 0; i < nent; ++i)
     {
 	int spawnmode= PTHREAD_CREATE_JOINABLE;
-        tmp_item = (struct alt_aio_item*)malloc(sizeof(struct alt_aio_item)*nent);
+        tmp_item = (struct wormup_aio_item*)malloc(sizeof(struct wormup_aio_item)*nent);
         if(!tmp_item)
         {
             return (-1);
         }
-        memset(tmp_item, 0, sizeof(struct alt_aio_item));
+        memset(tmp_item, 0, sizeof(struct wormup_aio_item));
 
         if(mode == LIO_NOWAIT && i == (nent - 1))
         {
@@ -105,14 +105,14 @@ int alt_lio_listio(int mode, struct aiocb * const list[],
         {
             /* note: in this case don't store the master's tid in the array;
              * some thread implementations may allow the the
-             * alt_lio_thread() to complete (and try to free the array)
+             * wormup_lio_thread() to complete (and try to free the array)
              * before pthread_create() finishes execution here.
              */
-            ret = pthread_create(&master_tid, &attr, alt_lio_thread, tmp_item);
+            ret = pthread_create(&master_tid, &attr, wormup_lio_thread, tmp_item);
         }
         else
         {
-            ret = pthread_create(&tids[i], &attr, alt_lio_thread, tmp_item);
+            ret = pthread_create(&tids[i], &attr, wormup_lio_thread, tmp_item);
         }
         if(ret != 0)
         {
@@ -132,7 +132,7 @@ int alt_lio_listio(int mode, struct aiocb * const list[],
             return(-1);
         }
         gossip_debug(GOSSIP_BSTREAM_DEBUG,
-                     "[alt-aio]: pthread_create completed:"
+                     "[wormup-aio]: pthread_create completed:"
                      " id: %d, thread_id: %p\n",
                      i, (void *)tids[i]);
     }
@@ -143,7 +143,7 @@ int alt_lio_listio(int mode, struct aiocb * const list[],
         for(i = 0; i < nent; ++i)
         {
             pthread_join(tids[i], NULL);
-            if(ret != 0 && alt_aio_error(list[i]) != 0)
+            if(ret != 0 && wormup_aio_error(list[i]) != 0)
             {
                 /* for now we're just overwriting previous errors
                  * since we have no way to store and return them
@@ -151,7 +151,7 @@ int alt_lio_listio(int mode, struct aiocb * const list[],
                  * The caller should call aio_error to get the
                  * element specific errors
                  */
-                ret = alt_aio_error(list[i]);
+                ret = wormup_aio_error(list[i]);
             }
         }
 
@@ -160,7 +160,7 @@ int alt_lio_listio(int mode, struct aiocb * const list[],
     return(ret);
 }
 
-static int alt_aio_error(const struct aiocb *aiocbp)
+static int wormup_aio_error(const struct aiocb *aiocbp)
 {
 #ifdef HAVE_AIOCB_ERROR_CODE
     return aiocbp->__error_code;
@@ -169,7 +169,7 @@ static int alt_aio_error(const struct aiocb *aiocbp)
 #endif
 }
 
-static ssize_t alt_aio_return(struct aiocb *aiocbp)
+static ssize_t wormup_aio_return(struct aiocb *aiocbp)
 {
 #ifdef HAVE_AIOCB_RETURN_VALUE
     return aiocbp->__return_value;
@@ -178,40 +178,40 @@ static ssize_t alt_aio_return(struct aiocb *aiocbp)
 #endif
 }
 
-static int alt_aio_cancel(int filedesc, struct aiocb *aiocbp)
+static int wormup_aio_cancel(int filedesc, struct aiocb *aiocbp)
 {
     errno = ENOSYS;
     return -1;
 }
 
-static int alt_aio_suspend(const struct aiocb * const list[], int nent,
+static int wormup_aio_suspend(const struct aiocb * const list[], int nent,
                            const struct timespec * timeout)
 {
     errno = ENOSYS;
     return -1;
 }
 
-static int alt_aio_read(struct aiocb * aiocbp)
+static int wormup_aio_read(struct aiocb * aiocbp)
 {
     errno = ENOSYS;
     return -1;
 }
 
-static int alt_aio_write(struct aiocb * aiocbp)
+static int wormup_aio_write(struct aiocb * aiocbp)
 {
     errno = ENOSYS;
     return -1;
 }
 
-static int alt_aio_fsync(int operation, struct aiocb * aiocbp)
+static int wormup_aio_fsync(int operation, struct aiocb * aiocbp)
 {
     errno = ENOSYS;
     return -1;
 }
 
-static void* alt_lio_thread(void* foo)
+static void* wormup_lio_thread(void* foo)
 {
-    struct alt_aio_item* tmp_item = (struct alt_aio_item*)foo;
+    struct wormup_aio_item* tmp_item = (struct wormup_aio_item*)foo;
     int ret = 0;
 
     struct stat statbuf;
@@ -236,7 +236,7 @@ static void* alt_lio_thread(void* foo)
     else if(tmp_item->cb_p->aio_lio_opcode == LIO_WRITE)
     {
         gossip_debug(GOSSIP_BSTREAM_DEBUG,
-                     "[alt-aio]: pwrite: cb_p: %p, "
+                     "[wormup-aio]: pwrite: cb_p: %p, "
                      "fd: %d, bufp: %p, size: %zd off:%llu\n",
                      tmp_item->cb_p, tmp_item->cb_p->aio_fildes,
                      tmp_item->cb_p->aio_buf, tmp_item->cb_p->aio_nbytes,
@@ -298,7 +298,7 @@ static void* alt_lio_thread(void* foo)
     return NULL;
 }
 
-static int alt_aio_bstream_read_list(TROVE_coll_id coll_id,
+static int wormup_aio_bstream_read_list(TROVE_coll_id coll_id,
                                      TROVE_handle handle,
                                      char **mem_offset_array,
                                      TROVE_size *mem_size_array,
@@ -329,11 +329,11 @@ static int alt_aio_bstream_read_list(TROVE_coll_id coll_id,
                                 context_id,
                                 out_op_id_p,
                                 LIO_READ,
-                                &alt_aio_ops,
+                                &wormup_aio_ops,
                                 hints);
 }
 
-static int alt_aio_bstream_write_list(TROVE_coll_id coll_id,
+static int wormup_aio_bstream_write_list(TROVE_coll_id coll_id,
                                       TROVE_handle handle,
                                       char **mem_offset_array,
                                       TROVE_size *mem_size_array,
@@ -370,14 +370,14 @@ static int alt_aio_bstream_write_list(TROVE_coll_id coll_id,
 
 static struct dbpf_aio_ops wormup_aio_ops =
 {
-    alt_aio_read,
-    alt_aio_write,
-    alt_lio_listio,
-    alt_aio_error,
-    alt_aio_return,
-    alt_aio_cancel,
-    alt_aio_suspend,
-    alt_aio_fsync
+    wormup_aio_read,
+    wormup_aio_write,
+    wormup_lio_listio,
+    wormup_aio_error,
+    wormup_aio_return,
+    wormup_aio_cancel,
+    wormup_aio_suspend,
+    wormup_aio_fsync
 };
 
 struct TROVE_bstream_ops wormup_aio_bstream_ops =
@@ -386,8 +386,8 @@ struct TROVE_bstream_ops wormup_aio_bstream_ops =
     dbpf_bstream_write_at,
     dbpf_bstream_resize,
     dbpf_bstream_validate,
-    alt_aio_bstream_read_list,
-    alt_aio_bstream_write_list,
+    wormup_aio_bstream_read_list,
+    wormup_aio_bstream_write_list,
     dbpf_bstream_flush,
     NULL
 };

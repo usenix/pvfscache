@@ -19,8 +19,8 @@ static inline void init_cache_stack_list(void);
 
 unsigned long wormup_radix_get_value(const void *item);
 
-/* cache_init(): initiate cache. */
-int cache_init()
+/* wormup_cache_init(): initiate cache. */
+int wormup_cache_init()
 {
     if ( !cache_initialized ) {
 		dev.cachesize   = WORMUP_CACHE_SIZE*1048576;

@@ -2757,6 +2757,7 @@ DOTCONF_CB(get_trove_method)
 	else if(!strcmp(cmd->data.str, "wormup-aio"))
     {
         *method = TROVE_METHOD_DBPF_WORMUPAIO;
+		wormup_cache_init();
     }
     else
     {
